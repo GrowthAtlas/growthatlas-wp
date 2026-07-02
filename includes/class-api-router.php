@@ -37,6 +37,12 @@ class ApiRouter
             'callback' => [__CLASS__, 'create_content_draft'],
             'permission_callback' => [__CLASS__, 'authenticate'],
         ]);
+
+        register_rest_route($namespace, '/content-drafts/(?P<external_id>[^/]+)', [
+            'methods' => 'PUT, PATCH',
+            'callback' => [__CLASS__, 'update_content_draft'],
+            'permission_callback' => [__CLASS__, 'authenticate'],
+        ]);
     }
 
     // ── Auth ─────────────────────────────────────────────────────────────────
@@ -85,6 +91,7 @@ class ApiRouter
                 'platform_version' => get_bloginfo('version'),
                 'php_version' => PHP_VERSION,
                 'growthatlas_api_version' => 'v1',
+                'supports_update' => true,
             ],
         ], 200);
     }
@@ -190,5 +197,10 @@ class ApiRouter
     public static function create_content_draft(\WP_REST_Request $request): \WP_REST_Response
     {
         return ContentHandler::handle($request);
+    }
+
+    public static function update_content_draft(\WP_REST_Request $request): \WP_REST_Response
+    {
+        return ContentHandler::handle_update($request, (string) $request->get_param('external_id'));
     }
 }

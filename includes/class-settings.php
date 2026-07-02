@@ -105,6 +105,66 @@ class Settings
                 </table>
                 <?php submit_button(); ?>
             </form>
+
+            <?php self::render_received_content(); ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * List every post received from GrowthAtlas with links to edit it locally,
+     * view it live, and open the originating draft in the GrowthAtlas dashboard.
+     */
+    private static function render_received_content(): void
+    {
+        $posts = get_posts([
+            'post_type' => 'any',
+            'post_status' => 'any',
+            'meta_key' => '_growthatlas_draft_id',
+            'posts_per_page' => 50,
+            'orderby' => 'modified',
+            'order' => 'DESC',
+        ]);
+        ?>
+        <div style="background:#fff;border:1px solid #ddd;border-radius:6px;padding:16px 20px;margin-top:24px;max-width:900px;">
+            <h3 style="margin-top:0;"><?php esc_html_e('Content from GrowthAtlas', 'growthatlas'); ?></h3>
+            <?php if (empty($posts)) : ?>
+                <p style="color:#666;"><?php esc_html_e('No content received yet. Publish a draft from GrowthAtlas to see it here.', 'growthatlas'); ?></p>
+            <?php else : ?>
+                <table class="widefat striped" style="border:none;">
+                    <thead>
+                        <tr>
+                            <th><?php esc_html_e('Title', 'growthatlas'); ?></th>
+                            <th><?php esc_html_e('Status', 'growthatlas'); ?></th>
+                            <th><?php esc_html_e('SEO', 'growthatlas'); ?></th>
+                            <th><?php esc_html_e('Updated', 'growthatlas'); ?></th>
+                            <th><?php esc_html_e('Links', 'growthatlas'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($posts as $post) :
+                            $seo = get_post_meta($post->ID, '_growthatlas_seo_score', true);
+                            $ga_url = get_post_meta($post->ID, '_growthatlas_url', true);
+                            ?>
+                            <tr>
+                                <td><strong><?php echo esc_html(get_the_title($post->ID) ?: '(untitled)'); ?></strong></td>
+                                <td><?php echo esc_html(ucfirst(get_post_status($post->ID))); ?></td>
+                                <td><?php echo $seo !== '' ? esc_html($seo . '%') : '&mdash;'; ?></td>
+                                <td><?php echo esc_html(get_the_modified_date('M j, Y', $post->ID)); ?></td>
+                                <td>
+                                    <a href="<?php echo esc_url(get_edit_post_link($post->ID)); ?>"><?php esc_html_e('Edit', 'growthatlas'); ?></a>
+                                    &middot;
+                                    <a href="<?php echo esc_url(get_permalink($post->ID)); ?>" target="_blank" rel="noopener"><?php esc_html_e('View', 'growthatlas'); ?></a>
+                                    <?php if ($ga_url) : ?>
+                                        &middot;
+                                        <a href="<?php echo esc_url($ga_url); ?>" target="_blank" rel="noopener"><?php esc_html_e('GrowthAtlas', 'growthatlas'); ?></a>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
         </div>
         <?php
     }
