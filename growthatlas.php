@@ -3,7 +3,7 @@
  * Plugin Name:       GrowthAtlas
  * Plugin URI:        https://growthatlas.io/connector-api#wordpress
  * Description:       Official WordPress connector for GrowthAtlas. Receives AI-generated SEO content from GrowthAtlas and publishes it to your WordPress site automatically.
- * Version:           1.0.1
+ * Version:           1.0.0
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            GrowthAtlas
@@ -17,7 +17,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('GROWTHATLAS_VERSION', '1.0.1');
+define('GROWTHATLAS_VERSION', '1.0.0');
 define('GROWTHATLAS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('GROWTHATLAS_PLUGIN_URL', plugin_dir_url(__FILE__));
 

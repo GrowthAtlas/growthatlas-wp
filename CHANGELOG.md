@@ -2,15 +2,13 @@
 
 ## [Unreleased]
 
----
-
-## [1.0.1] — 2026-07-12
-
 ### Added
 
-- **Update available notice.** Settings page checks the latest GitHub release
+- **Update available notice.** Settings page checks the latest GitHub release/tags
   (cached 12 hours) and shows a warning when a newer plugin version exists.
 - Displays the installed connector version on the settings page.
+
+---
 
 ## [1.0.0] — 2026-07-02
 
