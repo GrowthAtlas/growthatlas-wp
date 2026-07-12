@@ -35,6 +35,7 @@ class Settings
     {
         $api_key = get_option('growthatlas_api_key', '');
         $endpoint = rest_url('growthatlas/v1/health');
+        $version_status = VersionChecker::status();
 
         if (isset($_POST['growthatlas_regenerate_key']) && check_admin_referer('growthatlas_regen_key')) {
             $api_key = bin2hex(random_bytes(24));
@@ -43,6 +44,42 @@ class Settings
         ?>
         <div class="wrap">
             <h1><?php esc_html_e('GrowthAtlas Settings', 'growthatlas'); ?></h1>
+
+            <?php if (! empty($version_status['update_available'])) : ?>
+                <div class="notice notice-warning" style="padding:12px 16px;margin:16px 0 24px;border-left-width:4px;max-width:720px;">
+                    <p style="margin:0 0 6px;font-weight:600;">
+                        <?php esc_html_e('GrowthAtlas connector update available', 'growthatlas'); ?>
+                    </p>
+                    <p style="margin:0 0 10px;">
+                        <?php
+                        printf(
+                            /* translators: 1: current version, 2: latest version */
+                            esc_html__('You are on v%1$s. Latest release is v%2$s. Update the GrowthAtlas plugin on this site.', 'growthatlas'),
+                            esc_html($version_status['current']),
+                            esc_html($version_status['latest'])
+                        );
+                        ?>
+                    </p>
+                    <p style="margin:0;">
+                        <a class="button button-secondary" href="<?php echo esc_url($version_status['releases_url']); ?>" target="_blank" rel="noopener noreferrer">
+                            <?php esc_html_e('View release', 'growthatlas'); ?>
+                        </a>
+                    </p>
+                </div>
+            <?php endif; ?>
+
+            <p style="margin:0 0 16px;color:#666;font-size:13px;">
+                <?php
+                printf(
+                    /* translators: %s: plugin version */
+                    esc_html__('Connector version v%s', 'growthatlas'),
+                    esc_html($version_status['current'])
+                );
+                if (! empty($version_status['checked']) && empty($version_status['update_available'])) {
+                    echo ' · ' . esc_html__('up to date', 'growthatlas');
+                }
+                ?>
+            </p>
 
             <div style="background:#fff;border:1px solid #ddd;border-radius:6px;padding:16px 20px;margin-bottom:24px;max-width:600px;">
                 <h3 style="margin-top:0;"><?php esc_html_e('Connection Details', 'growthatlas'); ?></h3>
